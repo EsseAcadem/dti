@@ -358,6 +358,20 @@
             fill: #ffffff;
         }
 
+        .contact-mail-button {
+            gap: 9px;
+            padding: 8px 14px 8px 10px;
+        }
+
+        .contact-mail-button .email-icon-wrapper {
+            width: 30px;
+            height: 30px;
+        }
+
+        .contact-mail-button .member-name {
+            white-space: nowrap;
+        }
+
         .footer-tools {
             margin-top: 28px;
             display: flex;
@@ -489,52 +503,20 @@
     </section>
 
     <footer>
-        <h3>The DT&i Academy Team</h3>
-        
+        <h3>Contact the DT&amp;i Academy Team</h3>
+
         <div class="team-container">
-            <!-- Member 1: Alex -->
-            <a href="mailto:a.gull@nhs.net" class="team-member" title="Send email to Alex Gull">
-                <div class="avatar">
-                    <img src="alex.jpg" alt="Alex Gull" class="avatar-img" onerror="this.style.display='none';">
-                    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            <a
+                href="mailto:gstt.dtiacademy@nhs.net"
+                class="team-member contact-mail-button"
+                title="Email the DT&i Academy Team"
+            >
+                <div class="email-icon-wrapper" aria-hidden="true">
+                    <svg class="email-icon" viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/>
+                    </svg>
                 </div>
-                <div class="member-info">
-                    <div class="member-name">Alex Gull</div>
-                    <span class="member-title">Essentia Academy & Workforce Programme Manager</span>
-                </div>
-                <div class="email-icon-wrapper">
-                    <svg class="email-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                </div>
-            </a>
-
-            <!-- Member 2: Rafael -->
-            <a href="mailto:rafael.battaglini@nhs.net" class="team-member" title="Send email to Rafael Battaglini">
-                <div class="avatar">
-                    <img src="low_RED_ONE - Copy.jpg" alt="Rafael Battaglini" class="avatar-img" onerror="this.style.display='none';">
-                    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                </div>
-                <div class="member-info">
-                    <div class="member-name">Rafael Battaglini</div>
-                    <span class="member-title">Apprenticeship and Academy Development Officer</span>
-                </div>
-                <div class="email-icon-wrapper">
-                    <svg class="email-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                </div>
-            </a>
-
-            <!-- Member 3: Romano -->
-            <a href="mailto:romano.reyes@nhs.net" class="team-member" title="Send email to Romano Reyes">
-                <div class="avatar">
-                    <img src="romano.jpg" alt="Romano Reyes" class="avatar-img" onerror="this.style.display='none';">
-                    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                </div>
-                <div class="member-info">
-                    <div class="member-name">Romano Reyes</div>
-                    <span class="member-title">Workforce Development & Academy Administrator</span>
-                </div>
-                <div class="email-icon-wrapper">
-                    <svg class="email-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                </div>
+                <span class="member-name">Email the team</span>
             </a>
         </div>
 
