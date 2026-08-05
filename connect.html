@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
+            --header-height: 105px;
             --nhs-blue: #005EB8;
             --nhs-dark-blue: #003087;
             --nhs-bright-blue: #00A9CE;
@@ -93,12 +94,14 @@
         .banner {
             position: relative;
             width: 100%;
-            padding: 180px 50px 100px 50px;
+            min-height: calc(100svh - var(--header-height));
+            margin-top: var(--header-height);
+            padding: clamp(28px, 4vh, 48px) 50px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 75vh;
+            gap: 30px;
             overflow: hidden;
             background-color: transparent;
         }
@@ -115,13 +118,15 @@
 
         .cards-container {
             display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
             gap: 40px;
             flex-wrap: wrap;
             position: relative;
             z-index: 2;
+            align-items: center;
             justify-content: center;
-            max-width: 1200px;
-            margin: 0 auto;
         }
 
         .card {
@@ -223,7 +228,7 @@
         }
 
         footer {
-            padding: 20px 20px 60px 20px;
+            padding: 0 20px;
             position: relative;
             z-index: 2;
             display: flex;
@@ -413,10 +418,17 @@
         }
 
         @media (max-width: 768px) {
+            :root { --header-height: 80px; }
             header { padding: 15px; }
             .text-logo { height: 50px; }
-            .banner { padding: 140px 20px 60px 20px; }
-            footer { padding: 20px 15px; }
+            .banner {
+                min-height: calc(100svh - var(--header-height));
+                margin-top: var(--header-height);
+                padding: 28px 20px 32px;
+                gap: 26px;
+            }
+            .cards-container { gap: 24px; }
+            footer { padding: 0 15px; }
             .team-member { width: 100%; max-width: 100%; }
             .footer-tools { margin-top: 24px; }
         }
@@ -503,7 +515,6 @@
             </a>
 
         </div>
-    </section>
 
     <footer>
         <h3>Contact the DT&amp;i Academy Team</h3>
@@ -540,6 +551,7 @@
             <div class="site-credit">Designed and developed by Rafael Battaglini</div>
         </div>
     </footer>
+    </section>
 
     <script>
         const canvas = document.getElementById('networkCanvas');
