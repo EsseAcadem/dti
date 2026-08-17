@@ -3735,15 +3735,13 @@ function updateApprenticeshipGateProgress() {
 function initApprenticeshipChatDrag() {
   if (!apprenticeshipChatLauncher || !apprenticeshipChatFab) return;
 
-  const state = {
-    pointerId: null,
-    startX: 0,
-    startY: 0,
-    offsetX: 0,
-    offsetY: 0,
-    moved: false,
-    suppressClick: false
-  };
+  let activePointerId = null;
+  let startX = 0;
+  let startY = 0;
+  let startLeft = 0;
+  let startTop = 0;
+  let dragged = false;
+  let blockNextClick = false;
 
   const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -3751,70 +3749,71 @@ function initApprenticeshipChatDrag() {
     const rect = apprenticeshipChatLauncher.getBoundingClientRect();
     const maxLeft = Math.max(12, window.innerWidth - rect.width - 12);
     const maxTop = Math.max(12, window.innerHeight - rect.height - 12);
+
     apprenticeshipChatLauncher.style.left = `${clamp(left, 12, maxLeft)}px`;
     apprenticeshipChatLauncher.style.top = `${clamp(top, 12, maxTop)}px`;
     apprenticeshipChatLauncher.style.right = 'auto';
     apprenticeshipChatLauncher.style.bottom = 'auto';
   };
 
-  const endDrag = () => {
-    state.pointerId = null;
-    apprenticeshipChatLauncher.classList.remove('dragging');
-    requestAnimationFrame(() => {
-      state.suppressClick = state.moved;
-      state.moved = false;
-    });
-  };
-
   apprenticeshipChatLauncher.addEventListener('pointerdown', event => {
     if (event.pointerType === 'mouse' && event.button !== 0) return;
+
     const rect = apprenticeshipChatLauncher.getBoundingClientRect();
-    state.pointerId = event.pointerId;
-    state.startX = event.clientX;
-    state.startY = event.clientY;
-    state.offsetX = event.clientX - rect.left;
-    state.offsetY = event.clientY - rect.top;
-    state.moved = false;
-    apprenticeshipChatLauncher.classList.add('dragging');
-    apprenticeshipChatLauncher.setPointerCapture?.(event.pointerId);
+    activePointerId = event.pointerId;
+    startX = event.clientX;
+    startY = event.clientY;
+    startLeft = rect.left;
+    startTop = rect.top;
+    dragged = false;
   });
 
-  apprenticeshipChatLauncher.addEventListener('pointermove', event => {
-    if (state.pointerId !== event.pointerId) return;
-    const dx = event.clientX - state.startX;
-    const dy = event.clientY - state.startY;
-    if (!state.moved && Math.hypot(dx, dy) > 6) state.moved = true;
-    if (!state.moved) return;
-    positionLauncher(event.clientX - state.offsetX, event.clientY - state.offsetY);
-  });
+  window.addEventListener('pointermove', event => {
+    if (event.pointerId !== activePointerId) return;
 
-  apprenticeshipChatLauncher.addEventListener('pointerup', event => {
-    if (state.pointerId !== event.pointerId) return;
-    apprenticeshipChatLauncher.releasePointerCapture?.(event.pointerId);
-    endDrag();
-  });
+    const dx = event.clientX - startX;
+    const dy = event.clientY - startY;
 
-  apprenticeshipChatLauncher.addEventListener('pointercancel', event => {
-    if (state.pointerId !== event.pointerId) return;
-    apprenticeshipChatLauncher.releasePointerCapture?.(event.pointerId);
-    endDrag();
-  });
+    if (!dragged && Math.hypot(dx, dy) > 7) {
+      dragged = true;
+      apprenticeshipChatLauncher.classList.add('dragging');
+    }
 
-  apprenticeshipChatFab.addEventListener('click', event => {
-    if (!state.suppressClick) return;
+    if (!dragged) return;
+
     event.preventDefault();
-    event.stopPropagation();
-    state.suppressClick = false;
+    positionLauncher(startLeft + dx, startTop + dy);
+  }, { passive: false });
+
+  window.addEventListener('pointerup', event => {
+    if (event.pointerId !== activePointerId) return;
+
+    if (dragged) {
+      blockNextClick = true;
+      setTimeout(() => {
+        blockNextClick = false;
+      }, 250);
+    }
+
+    activePointerId = null;
+    dragged = false;
+    apprenticeshipChatLauncher.classList.remove('dragging');
+  });
+
+  window.addEventListener('pointercancel', event => {
+    if (event.pointerId !== activePointerId) return;
+    activePointerId = null;
+    dragged = false;
+    apprenticeshipChatLauncher.classList.remove('dragging');
   });
 
   apprenticeshipChatLauncher.addEventListener('click', event => {
-    if (event.target === apprenticeshipChatFab || apprenticeshipChatFab.contains(event.target)) return;
-    if (state.suppressClick) {
-      event.preventDefault();
-      event.stopPropagation();
-      state.suppressClick = false;
-    }
-  });
+    if (!blockNextClick) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    blockNextClick = false;
+  }, true);
 
   window.addEventListener('resize', () => {
     if (!apprenticeshipChatLauncher.style.left || !apprenticeshipChatLauncher.style.top) return;
