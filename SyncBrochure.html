@@ -578,6 +578,13 @@
     align-items: center;
     gap: 10px;
     pointer-events: auto;
+    touch-action: none;
+    user-select: none;
+    cursor: grab;
+  }
+
+  .apprenticeship-chat-launcher.dragging {
+    cursor: grabbing;
   }
 
   .apprenticeship-chat-hint {
@@ -1343,6 +1350,37 @@
     font-size: 12.5px;
   }
 
+  /* Keep long course titles clear of the top-right price pill */
+  .card .head {
+    padding-right: 150px;
+  }
+
+  .card h3 {
+    padding-right: 0;
+  }
+
+  .pill {
+    max-width: calc(100% - 32px);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 900px) {
+    .card .head {
+      padding-right: 138px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .card .head {
+      padding-right: 128px;
+    }
+
+    .pill {
+      font-size: 10px;
+      padding: 5px 9px;
+    }
+  }
+
   @media (max-width: 1180px) {
     .card {
       grid-column: span 6;
@@ -1795,6 +1833,8 @@ const apprenticeshipContinue = document.getElementById('apprenticeshipContinue')
 const apprenticeshipCancel = document.getElementById('apprenticeshipCancel');
 const apprenticeshipScrollStatus = document.getElementById('apprenticeshipScrollStatus');
 const apprenticeshipLocked = document.getElementById('apprenticeship-locked');
+const apprenticeshipChatLauncher = document.querySelector('.apprenticeship-chat-launcher');
+const apprenticeshipChatFab = apprenticeshipChatLauncher?.querySelector('.apprenticeship-chat-fab') || null;
 const apprenticeshipPathSteps = [...document.querySelectorAll('[data-path-step]')];
 const apprenticeshipPathDetail = document.getElementById('apprenticeshipPathDetail');
 const apprenticeshipPathContent = [
@@ -3692,6 +3732,97 @@ function updateApprenticeshipGateProgress() {
   apprenticeshipContinue.disabled = !(reachedEnd && apprenticeshipConfirm.checked);
 }
 
+function initApprenticeshipChatDrag() {
+  if (!apprenticeshipChatLauncher || !apprenticeshipChatFab) return;
+
+  const state = {
+    pointerId: null,
+    startX: 0,
+    startY: 0,
+    offsetX: 0,
+    offsetY: 0,
+    moved: false,
+    suppressClick: false
+  };
+
+  const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+  const positionLauncher = (left, top) => {
+    const rect = apprenticeshipChatLauncher.getBoundingClientRect();
+    const maxLeft = Math.max(12, window.innerWidth - rect.width - 12);
+    const maxTop = Math.max(12, window.innerHeight - rect.height - 12);
+    apprenticeshipChatLauncher.style.left = `${clamp(left, 12, maxLeft)}px`;
+    apprenticeshipChatLauncher.style.top = `${clamp(top, 12, maxTop)}px`;
+    apprenticeshipChatLauncher.style.right = 'auto';
+    apprenticeshipChatLauncher.style.bottom = 'auto';
+  };
+
+  const endDrag = () => {
+    state.pointerId = null;
+    apprenticeshipChatLauncher.classList.remove('dragging');
+    requestAnimationFrame(() => {
+      state.suppressClick = state.moved;
+      state.moved = false;
+    });
+  };
+
+  apprenticeshipChatLauncher.addEventListener('pointerdown', event => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    const rect = apprenticeshipChatLauncher.getBoundingClientRect();
+    state.pointerId = event.pointerId;
+    state.startX = event.clientX;
+    state.startY = event.clientY;
+    state.offsetX = event.clientX - rect.left;
+    state.offsetY = event.clientY - rect.top;
+    state.moved = false;
+    apprenticeshipChatLauncher.classList.add('dragging');
+    apprenticeshipChatLauncher.setPointerCapture?.(event.pointerId);
+  });
+
+  apprenticeshipChatLauncher.addEventListener('pointermove', event => {
+    if (state.pointerId !== event.pointerId) return;
+    const dx = event.clientX - state.startX;
+    const dy = event.clientY - state.startY;
+    if (!state.moved && Math.hypot(dx, dy) > 6) state.moved = true;
+    if (!state.moved) return;
+    positionLauncher(event.clientX - state.offsetX, event.clientY - state.offsetY);
+  });
+
+  apprenticeshipChatLauncher.addEventListener('pointerup', event => {
+    if (state.pointerId !== event.pointerId) return;
+    apprenticeshipChatLauncher.releasePointerCapture?.(event.pointerId);
+    endDrag();
+  });
+
+  apprenticeshipChatLauncher.addEventListener('pointercancel', event => {
+    if (state.pointerId !== event.pointerId) return;
+    apprenticeshipChatLauncher.releasePointerCapture?.(event.pointerId);
+    endDrag();
+  });
+
+  apprenticeshipChatFab.addEventListener('click', event => {
+    if (!state.suppressClick) return;
+    event.preventDefault();
+    event.stopPropagation();
+    state.suppressClick = false;
+  });
+
+  apprenticeshipChatLauncher.addEventListener('click', event => {
+    if (event.target === apprenticeshipChatFab || apprenticeshipChatFab.contains(event.target)) return;
+    if (state.suppressClick) {
+      event.preventDefault();
+      event.stopPropagation();
+      state.suppressClick = false;
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (!apprenticeshipChatLauncher.style.left || !apprenticeshipChatLauncher.style.top) return;
+    const rect = apprenticeshipChatLauncher.getBoundingClientRect();
+    positionLauncher(rect.left, rect.top);
+  });
+}
+
 function updateCompactSearchVisibility() {
   if (!heroSearch || !connectHeader || !compactSearch) return;
 
@@ -4015,6 +4146,7 @@ setPageMode('home', '#welcome');
 render();
 updateHighlighter();
 updateCompactSearchVisibility();
+initApprenticeshipChatDrag();
 </script>
 
 <script>
