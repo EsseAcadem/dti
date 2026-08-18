@@ -2245,6 +2245,14 @@
     to { opacity: 1; transform: scale(1); }
   }
 
+  /* --- Home vertical balance ---
+     Centre the complete Home content group only when it fits in the available
+     viewport. `safe center` automatically falls back to the start when a
+     short/minimised window needs natural scrolling, so nothing is clipped. */
+  .connect-home {
+    justify-content: safe center !important;
+  }
+
   @media (max-width: 760px) {
     :root {
       --connect-header-height: 112px;
@@ -2300,6 +2308,7 @@
       min-height: calc(100vh - var(--connect-header-height)) !important;
       min-height: calc(100dvh - var(--connect-header-height)) !important;
       padding: var(--connect-view-top) 20px 34px !important;
+      justify-content: safe center !important;
     }
 
     .section {
