@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --header-height: 105px;
+            --header-height: 121px;
             --nhs-blue: #005EB8;
             --nhs-dark-blue: #003087;
             --nhs-bright-blue: #00A9CE;
@@ -66,7 +66,8 @@
             background: rgba(255, 255, 255, 0.35);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            padding: 20px 50px;
+            height: var(--header-height);
+            padding: 0 28px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -418,8 +419,8 @@
         }
 
         @media (max-width: 768px) {
-            :root { --header-height: 80px; }
-            header { padding: 15px; }
+            :root { --header-height: 113px; }
+            header { padding: 0 15px; }
             .text-logo { height: 50px; }
             .banner {
                 min-height: calc(100svh - var(--header-height));
