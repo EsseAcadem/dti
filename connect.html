@@ -1159,7 +1159,7 @@
     flex-wrap: wrap;
     gap: 6px;
     margin: 0;
-    padding: 0;
+    padding: 2px 0 3px;
     overflow: visible;
   }
 
@@ -1867,7 +1867,7 @@
     display: none !important;
   }
 
-  body.landing-view #connect-home { display: block !important; }
+  body.landing-view #connect-home { display: flex !important; }
   body:not(.landing-view) #connect-home { display: none !important; }
   body.landing-view .compact-search { opacity: 0; pointer-events: none; }
 
@@ -2019,6 +2019,9 @@
 
   body:not(.landing-view) .spy .nav-extra {
     filter: none !important;
+    /* The collapsed state needs overflow hidden for the fan animation, but once
+       opened it clips the rounded active/hover pill. Let the pill breathe. */
+    overflow: visible;
   }
 
   .spy .nav-brochure {
@@ -2032,6 +2035,21 @@
 
   body:not(.landing-view) .spy .nav-brochure {
     filter: none !important;
+  }
+
+  /* Visible compact pills must not be clipped when the hover motion lifts/scales them.
+     Clipping is only needed once Brochure starts folding away. */
+  body.landing-view .spy .nav-brochure {
+    overflow: visible;
+  }
+
+  body.landing-view .spy {
+    padding-top: 5px;
+    padding-bottom: 6px;
+  }
+
+  .spy .nav-core {
+    overflow: visible;
   }
 
   /* Page changes: no full-screen blur. A small scale + vertical movement produces the
