@@ -2316,6 +2316,47 @@
     }
   }
 
+
+  /* Skills England API attribution - required for apprenticeship data */
+  .skills-england-attribution {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 18px;
+    color: #64748b;
+    font-size: 10.5px;
+    line-height: 1.4;
+  }
+
+  .skills-england-attribution img {
+    display: block;
+    width: 92px;
+    height: auto;
+    flex: 0 0 auto;
+  }
+
+  .skills-england-attribution p {
+    margin: 0;
+    max-width: 480px;
+  }
+
+  .skills-england-attribution a {
+    color: inherit;
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  @media (max-width: 620px) {
+    .skills-england-attribution {
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      text-align: center;
+    }
+  }
+
 </style>
 </head>
 <body class="landing-view">
@@ -2467,6 +2508,13 @@
         <button class="gate-btn gate-btn-primary" type="button" onclick="requestApprenticeships(event, 'search')">View introduction</button>
       </div>
       <div class="grid" id="grid-apprenticeships"></div>
+
+      <div class="skills-england-attribution" aria-label="Skills England data attribution">
+        <a href="https://skillsengland.education.gov.uk/" target="_blank" rel="noopener noreferrer" aria-label="Skills England">
+          <img src="https://occupational-maps.skillsengland.education.gov.uk/media/xmehhrr0/skills-england_lesser_arms_stacked-dfe-blue-se-logo.svg?rmode=max&amp;width=500" alt="Skills England">
+        </a>
+        <p>© Skills England 2025<br>This information is licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener noreferrer">Open Government Licence</a>.</p>
+      </div>
     </section>
 
     <section id="contact" class="section" style="display: block;">
