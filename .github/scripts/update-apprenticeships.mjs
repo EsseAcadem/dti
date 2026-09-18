@@ -19,7 +19,6 @@ API_URL.searchParams.set(
 );
 
 const ACADEMY_EMAIL = 'gstt.DTIAcademy@nhs.net';
-const ALLOWED_LEVELS = new Set([3, 4, 5, 6]);
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -342,7 +341,7 @@ function buildTags(item, details, title) {
     'IT',
     'Apprenticeship',
     'Levy',
-    'Free',
+    ...(details.level === 7 ? ['Funding eligibility'] : ['Free']),
     `Level ${details.level}`,
     details.reference,
     ...titleWords,
@@ -369,12 +368,13 @@ function buildCard(item, details) {
     learn: buildLearnBullets(item.occupation),
     delivery: 'Work-based apprenticeship',
     duration: details.durationMonths ? `${details.durationMonths} months` : 'Duration TBC',
-    cost: 'Levy-funded (Free)',
+    cost: details.level === 7 ? 'Funding eligibility applies' : 'Levy-funded (Free)',
     how: `E-mail ${ACADEMY_EMAIL}`,
     skillsEngland: {
       reference: details.reference,
       version: details.version,
       status: details.status,
+      level: details.level,
       maximumFunding: details.maximumFunding,
       url: details.url
     }
@@ -414,7 +414,7 @@ for (const item of products) {
       await sleep(120);
     }
 
-    if (!details.level || !ALLOWED_LEVELS.has(details.level)) continue;
+    if (!details.level) continue;
     if (!isAvailableForStarts(details)) continue;
 
     cards.push(buildCard(item, details));
@@ -430,7 +430,7 @@ cards.sort((a, b) => {
 });
 
 if (!cards.length) {
-  throw new Error(`No currently available Level 3-6 Digital apprenticeships survived validation. Failures: ${failures.slice(0, 5).join(' | ')}`);
+  throw new Error(`No currently available Digital apprenticeships survived validation. Failures: ${failures.slice(0, 5).join(' | ')}`);
 }
 
 // Guard against accidentally publishing a badly parsed response.
