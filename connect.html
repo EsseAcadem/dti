@@ -2321,24 +2321,26 @@
   .skills-england-attribution {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 18px;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    margin-top: 14px;
     color: #64748b;
     font-size: 10.5px;
-    line-height: 1.4;
+    line-height: 1.25;
+    text-align: center;
   }
 
   .skills-england-attribution img {
     display: block;
-    width: 92px;
+    width: 66px;
     height: auto;
     flex: 0 0 auto;
   }
 
   .skills-england-attribution p {
     margin: 0;
-    max-width: 480px;
+    white-space: nowrap;
   }
 
   .skills-england-attribution a {
@@ -2350,10 +2352,12 @@
 
   @media (max-width: 620px) {
     .skills-england-attribution {
-      justify-content: center;
-      align-items: center;
       flex-wrap: wrap;
-      text-align: center;
+      gap: 6px 9px;
+    }
+
+    .skills-england-attribution p {
+      white-space: normal;
     }
   }
 
@@ -2513,7 +2517,7 @@
         <a href="https://skillsengland.education.gov.uk/" target="_blank" rel="noopener noreferrer" aria-label="Skills England">
           <img src="https://occupational-maps.skillsengland.education.gov.uk/media/xmehhrr0/skills-england_lesser_arms_stacked-dfe-blue-se-logo.svg?rmode=max&amp;width=500" alt="Skills England">
         </a>
-        <p>© Skills England 2025<br>This information is licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener noreferrer">Open Government Licence</a>.</p>
+        <p>© Skills England 2025 · This information is licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener noreferrer">Open Government Licence</a>.</p>
       </div>
     </section>
 
