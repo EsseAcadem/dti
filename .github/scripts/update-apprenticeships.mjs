@@ -5,18 +5,28 @@ if (!API_KEY) {
   throw new Error('Missing SKILLS_ENGLAND_API_KEY GitHub secret.');
 }
 
-const API_URL = new URL('https://occupational-maps-api.skillsengland.education.gov.uk/api/v1/digital');
-API_URL.searchParams.set(
-  'expand',
-  [
-    'occupation.overview',
-    'occupation.summary',
-    'occupation.typicaljobtitles',
-    'occupation.keywords',
-    'occupation.dutiesKSB',
-    'occupation.products'
-  ].join(',')
-);
+const API_BASE_URL = 'https://occupational-maps-api.skillsengland.education.gov.uk/api/v1/digital';
+
+function makeDigitalRouteUrl(expansions) {
+  const url = new URL(API_BASE_URL);
+  url.searchParams.set('expand', expansions.join(','));
+  return url;
+}
+
+const API_URL_FULL = makeDigitalRouteUrl([
+  'occupation.overview',
+  'occupation.summary',
+  'occupation.typicaljobtitles',
+  'occupation.keywords',
+  'occupation.dutiesKSB',
+  'occupation.products'
+]);
+
+// This is the exact expansion used in Skills England's published API example.
+// If one of the richer expansions is temporarily unsupported, we can still
+// obtain the apprenticeship products and enrich each card from the official
+// apprenticeship pages below.
+const API_URL_MINIMAL = makeDigitalRouteUrl(['occupation.products']);
 
 const ACADEMY_EMAIL = 'gstt.DTIAcademy@nhs.net';
 
@@ -382,12 +392,21 @@ function buildCard(item, details) {
 }
 
 console.log('Fetching Digital route from Skills England…');
-const apiData = await fetchJson(API_URL, {
-  headers: {
-    'X-API-KEY': API_KEY,
-    'Accept': 'application/json'
-  }
-});
+const apiHeaders = {
+  'X-API-KEY': API_KEY,
+  'Accept': 'application/json'
+};
+
+let apiData;
+try {
+  apiData = await fetchJson(API_URL_FULL, { headers: apiHeaders });
+} catch (error) {
+  const message = String(error?.message || error);
+  if (!message.includes('returned 404')) throw error;
+
+  console.warn('Full Digital-route expansion returned 404. Retrying with Skills England\'s documented occupation.products expansion only…');
+  apiData = await fetchJson(API_URL_MINIMAL, { headers: apiHeaders });
+}
 
 const products = collectProducts(apiData);
 if (!products.length) {
